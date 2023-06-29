@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "679742114416",
+    "project_id": "mynotes-hitugo",
+    "storage_bucket": "mynotes-hitugo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679742114416:android:2dda19995ecd615bf402b5",
+        "android_client_info": {
+          "package_name": "com.hitugo.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679742114416-63emeugpechmrs0qkkf3kbvmrvm2n9da.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoxphEWYZhtsnCZVqIjvPpgnUE5H_z57A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679742114416-63emeugpechmrs0qkkf3kbvmrvm2n9da.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "679742114416-ibnaqveiuf5kt977pn07gcs351jl1t08.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hitugo.mynotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
