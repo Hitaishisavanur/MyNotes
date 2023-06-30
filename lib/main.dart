@@ -20,7 +20,8 @@ void main() {
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
-        noteRoute: (context) => const NotesView()
+        noteRoute: (context) => const NotesView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     ),
   );
@@ -41,12 +42,12 @@ class HomePage extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
                 if (user.emailVerified) {
-                  return const NotesView();
+                  return const LoginView();
                 } else {
                   return const VerifyEmailView();
                 }
               } else {
-                return const LoginView();
+                return const RegisterView();
               }
 
             default:
@@ -79,8 +80,10 @@ class _NotesViewState extends State<NotesView> {
                   devtools.log(shouldLogout.toString());
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      loginRoute,
+                      (route) => false,
+                    );
                   }
                   break;
               }
@@ -117,26 +120,4 @@ Future<bool> showLogoutDialogue(context) {
           ],
         );
       }).then((value) => value ?? false);
-}
-
-Future<void> showErrorDialogue(
-  BuildContext context,
-  String text,
-) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("An Error Occurred!"),
-        content: Text(text),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("Ok"))
-        ],
-      );
-    },
-  );
 }
