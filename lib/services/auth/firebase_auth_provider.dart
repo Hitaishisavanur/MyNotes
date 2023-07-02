@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/auth_user.dart';
 import 'package:mynotes/services/auth/auth_provider.dart';
@@ -85,8 +87,6 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {
       throw UserNotLOggedInAuthException();
     }
-    // TODO: implement logOut
-    throw UnimplementedError();
   }
 
   @override
@@ -97,5 +97,13 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {}
     // TODO: implement sendEmailVerification
     throw UserNotLOggedInAuthException();
+  }
+
+  @override
+  Future<void> initialize() async {
+    // TODO: implement initialize
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 }

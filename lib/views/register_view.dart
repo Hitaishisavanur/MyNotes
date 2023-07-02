@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 
 import '../utilities/show_error_dialogue.dart';
 
@@ -56,22 +57,22 @@ class _RegisterViewState extends State<RegisterView> {
               final password = _password.text;
 
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await AuthService.firebase().createUser(
                   email: email,
                   password: password,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+
+                AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(verifyEmailRoute);
-              } on FirebaseAuthException catch (e) {
-                if (e.code == "weak-password") {
-                  await showErrorDialogue(context, "weak password");
-                } else if (e.code == "email-already-in-use") {
-                  await showErrorDialogue(
-                      context, "Already registered, please log in");
-                } else if (e.code == "invalid-email") {
-                  await showErrorDialogue(context, "Invalid Email");
-                }
+              } on WeakPasswordAuthException {
+                await showErrorDialogue(context, "weak password");
+              } on EmailAlreadyInUseAuthException {
+                await showErrorDialogue(
+                    context, "Already registered, please log in");
+              } on InvalidEmailAuthException {
+                await showErrorDialogue(context, "Invalid Email");
+              } on GenericAuthException {
+                await showErrorDialogue(context, "Failed to register");
               } catch (e) {
                 await showErrorDialogue(
                   context,

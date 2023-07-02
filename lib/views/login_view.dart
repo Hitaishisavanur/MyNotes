@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
-import '../utilities/show_error_dialogue.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/utilities/show_error_dialogue.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -55,31 +56,32 @@ class _LoginViewState extends State<LoginView> {
                 final password = _password.text;
 
                 try {
-                  final userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password);
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user?.emailVerified ?? false) {
+                  final userCredential = await AuthService.firebase().logIn(
+                    email: email,
+                    password: password,
+                  );
+                  final user = AuthService.firebase().currentUser;
+                  if (user?.isEmailVerified ?? false) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       noteRoute,
                       (route) => false,
                     );
                   } else {
-                    final user = FirebaseAuth.instance.currentUser;
-                    await user?.sendEmailVerification();
+                    AuthService.firebase().sendEmailVerification();
                     Navigator.of(context).pushNamed(
                       verifyEmailRoute,
                     );
                   }
                   devtools.log(userCredential.toString());
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == "user-not-found") {
-                    await showErrorDialogue(context, "user not found");
-                  } else if (e.code == "wrong-password") {
-                    await showErrorDialogue(context, "wrong credentials");
-                  } else {
-                    await showErrorDialogue(context, e.runtimeType.toString());
-                  }
+                } on UserNotFoundAuthException {
+                  await showErrorDialogue(
+                    context,
+                    "user not found",
+                  );
+                } on WrongPasswordAuthException {
+                  await showErrorDialogue(context, "wrong credentials");
+                } on GenericAuthException {
+                  await showErrorDialogue(context, "Authentication error");
                 } catch (e) {
                   await showErrorDialogue(context, e.toString());
                 }
