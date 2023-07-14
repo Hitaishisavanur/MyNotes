@@ -7,7 +7,7 @@ class NewNoteView extends StatefulWidget {
   const NewNoteView({super.key});
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  _NewNoteViewState createState() => _NewNoteViewState();
 }
 
 class _NewNoteViewState extends State<NewNoteView> {
@@ -44,8 +44,8 @@ class _NewNoteViewState extends State<NewNoteView> {
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final userEmail = currentUser.email!;
-    final owner = await _notesService.getUser(email: userEmail);
+    final email = currentUser.email!;
+    final owner = await _notesService.getUser(email: email);
     return await _notesService.createNote(owner: owner);
   }
 
@@ -56,11 +56,11 @@ class _NewNoteViewState extends State<NewNoteView> {
     }
   }
 
-  void _saveIfTextNotEmpty() {
+  void _saveIfTextNotEmpty() async {
     final note = _note;
     final text = _textController.text;
     if (note != null && text.isNotEmpty) {
-      _notesService.updateNote(
+      await _notesService.updateNote(
         note: note,
         text: text,
       );
@@ -86,11 +86,9 @@ class _NewNoteViewState extends State<NewNoteView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final data = snapshot.data;
-              if (data != null) {
-                _note = data as DatabaseNote;
-                _setupTextControllerListener();
-              }
+              _note = snapshot.data as DatabaseNote;
+              _setupTextControllerListener();
+
               return TextField(
                 controller: _textController,
                 keyboardType: TextInputType.multiline,
@@ -100,7 +98,7 @@ class _NewNoteViewState extends State<NewNoteView> {
               );
 
             default:
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
           }
         },
       ),
