@@ -71,7 +71,7 @@ class _NotesViewState extends State<NotesView> {
                     case ConnectionState.active:
                       if (snapshot.hasData) {
                         final allNotes = snapshot.data as List<DatabaseNote>;
-                        print(allNotes);
+
                         return NotesListView(
                           notes: allNotes,
                           onDeleteNote: (note) async {
@@ -85,7 +85,7 @@ class _NotesViewState extends State<NotesView> {
                           },
                         );
                       } else {
-                        return Center(child: const CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                     default:
@@ -95,7 +95,7 @@ class _NotesViewState extends State<NotesView> {
               );
 
             default:
-              return CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
           }
         },
       ),
