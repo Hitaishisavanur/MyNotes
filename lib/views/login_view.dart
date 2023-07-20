@@ -4,6 +4,7 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
+import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import 'package:mynotes/utilities/dialogues/error_dialogue.dart';
 
 class LoginView extends StatefulWidget {
@@ -51,29 +52,28 @@ class _LoginViewState extends State<LoginView> {
             autocorrect: false,
             enableSuggestions: false,
           ),
-          TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if (state is AuthStateLoggedOut) {
+                if (state.exception is WrongPasswordAuthException ||
+                    state.exception is UserNotFoundAuthException) {
+                  await showErrorDialogue(context, 'Wrong Credentials');
+                } else if (state.exception is GenericAuthException) {
+                  await showErrorDialogue(context, 'Authentication Error');
+                }
+              }
+            },
+            child: TextButton(
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
 
-                try {
                   context.read<AuthBloc>().add(
                         AuthEventLogin(email, password),
                       );
-                } on UserNotFoundAuthException {
-                  await showErrorDialogue(
-                    context,
-                    "user not found",
-                  );
-                } on WrongPasswordAuthException {
-                  await showErrorDialogue(context, "wrong credentials");
-                } on GenericAuthException {
-                  await showErrorDialogue(context, "Authentication error");
-                } catch (e) {
-                  await showErrorDialogue(context, e.toString());
-                }
-              },
-              child: const Text("Login")),
+                },
+                child: const Text("Login")),
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context)
