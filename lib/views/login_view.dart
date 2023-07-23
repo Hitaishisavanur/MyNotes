@@ -6,7 +6,7 @@ import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
 import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import 'package:mynotes/utilities/dialogues/error_dialogue.dart';
-import 'package:mynotes/utilities/dialogues/loading_dialogue.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,7 +18,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-  CloseDialogue? _closeDialogueHandle;
+  
 
   @override
   void initState() {
@@ -39,15 +39,7 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
-          final closeDialogue = _closeDialogueHandle;
-          if (!state.isLoading && closeDialogue != null) {
-            closeDialogue();
-            _closeDialogueHandle = null;
-          } else if (state.isLoading && closeDialogue == null) {
-            _closeDialogueHandle =
-                showLoadingDialogue(context: context, text: "Loading....");
-          }
-
+        
           if (state.exception is WrongPasswordAuthException ||
               state.exception is UserNotFoundAuthException) {
             await showErrorDialogue(context, 'Wrong Credentials');
