@@ -91,12 +91,9 @@ class MockAuthProvider implements AuthProvider {
       email: email,
       password: password,
     );
-
-    // TODO: implement createUser
   }
 
   @override
-  // TODO: implement currentUser
   AuthUser? get currentUser => _user;
 
   @override
@@ -123,7 +120,7 @@ class MockAuthProvider implements AuthProvider {
   Future<void> logOut() async {
     if (!isInitialized) throw NotInitializedException();
     if (_user == null) throw UserNotFoundAuthException();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     _user = null;
   }
 
@@ -138,5 +135,10 @@ class MockAuthProvider implements AuthProvider {
       email: 'foo@bar.com',
     );
     _user = newUser;
+  }
+
+  @override
+  Future<void> sendPasswordReset({required String toEmail}) {
+    throw UnimplementedError();
   }
 }
